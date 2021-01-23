@@ -1,0 +1,125 @@
+<!Doctype html>
+<html>
+
+<head>
+	<title>Mastodon</title>
+	<meta name="transparent" content="true">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script>
+		function deleteElement(element, timeout) {
+			setTimeout(() => element.parentElement.removeChild(element), timeout);
+		}
+
+		function createMessage(data) {
+			const li = document.createElement('li');
+			if (typeof (data) === 'string') {
+				li.classList.add('info');
+				li.textContent = data;
+			} else if (typeof (data) === 'object') {
+				if (data.event === 'update') {
+					li.classList.add('message');
+
+					const payload = JSON.parse(data.payload);
+					const icon = document.createElement('img');
+					icon.setAttribute('src', payload.account.avatar);
+					li.innerHTML = payload.content;
+					li.insertBefore(icon, li.childNodes[0]);
+				} else {
+					li.classList.add('noimplements');
+				}
+			} else {
+				li.classList.add('error');
+				li.textContent = 'Unknown: ' + data;
+			}
+
+			deleteElement(li, 5500);
+
+			return li;
+		}
+
+		function register(host, list, reconnect) {
+			const ws = new WebSocket('wss://' + host + '/api/v1/streaming/?stream=public:local');
+			ws.addEventListener('open', event => list.insertBefore(createMessage('接続しました。'), list.childNodes[0]));
+			ws.addEventListener('message', event => list.insertBefore(createMessage(JSON.parse(event.data)), list.childNodes[0]));
+			ws.addEventListener('close', event => {
+				list.insertBefore(createMessage('切断されました。'), list.childNodes[0]);
+				if (reconnect) register(host, list, reconnect);
+			});
+		}
+
+		window.addEventListener('load', () => {
+			const m = document.querySelector('#messages');
+
+			register('friends.cafe', m, true);
+		}, { once: true });
+	</script>
+	<style>
+		html {
+			width: 1200px;
+			height: 1200px;
+			overflow: hidden;
+		}
+
+		body {
+			padding: 400px 300px;
+			overflow: hidden;
+		}
+
+		#messages {
+			list-style-type: none;
+		}
+
+		li {
+			background-color: rgba(0, 0, 0, 0.3);
+			width: fit-content;
+			margin: 5px;
+			padding: 5px;
+			border-radius: 16px;
+			border: solid 2px black;
+
+			color: #aaa;
+
+			animation: hiddenAnimation 5s forwards;
+		}
+
+		li.info {
+			padding: 5px 20px;
+		}
+
+		li.message>img {
+			display: inline-block;
+			margin-right: 12px;
+			width: 48px;
+			border-radius: 24px;
+
+			opacity: 0.7;
+		}
+
+		li.message>p {
+			display: inline-block;
+			margin: 0;
+		}
+
+		@keyframes hiddenAnimation {
+			0% {
+				opacity: 1;
+			}
+
+			90% {
+				opacity: 1;
+			}
+
+			100% {
+				opacity: 0;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<ul id="messages">
+
+	</ul>
+</body>
+
+</html>

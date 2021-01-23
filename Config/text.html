@@ -1,0 +1,57 @@
+<!Doctype html>
+<html>
+
+<head>
+	<title>Test</title>
+	<meta name="transparent" content="true">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<style>
+		html {
+			width: 640px;
+			height: 480px;
+			overflow: hidden;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		div {
+			width: 100%;
+			text-align: center;
+			color: transparent;
+			-webkit-background-clip: text;
+			background-image: linear-gradient(45deg,
+					red,
+					orange,
+					yellow,
+					green,
+					aqua,
+					blue,
+					purple);
+			animation: 4s linear 0s infinite alternate slide;
+		}
+
+		@keyframes slide {
+			from {
+				background-position: 0% 0%;
+			}
+
+			to {
+				background-position: 100% 0%;
+			}
+
+			/* 右から左へ移動するアニメーション */
+		}
+	</style>
+</head>
+
+<body>
+	<div>
+		<h2>この文字はVRオーバーレイ埋め込みブラウザ</h2>
+		<h2>「大場レイ」で表示しています</h2>
+	</div>
+</body>
+
+</html>

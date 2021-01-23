@@ -1,0 +1,54 @@
+<!Doctype html>
+<html>
+
+<head>
+	<title>Digital Watch</title>
+	<meta name="transparent" content="true">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+	<style>
+		html {
+			width: 240px;
+			height: 240px;
+			overflow: hidden;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		table {
+			font-family: 'Share Tech Mono', monospace;
+			font-size: 32pt;
+			padding: 5px;
+			border: black solid 1px;
+			border-radius: 5px;
+			color: #aaa;
+			background-color: rgba(0, 0, 0, 0.2);
+		}
+	</style>
+	<script>
+		window.addEventListener('load', () => {
+			const [hour, min, sec] = ['hour', 'min', 'sec'].map(x => document.querySelector(`#${x}`));
+
+			const t = () => {
+				const now = new Date().toLocaleTimeString().split(':').map(x => x.substring(0, 2));
+				hour.textContent = now[0];
+				min.textContent = now[1];
+				sec.textContent = now[2];
+			};
+			t();
+			setInterval(t, 1000);
+		}, { once: true });
+	</script>
+</head>
+
+<body>
+	<table>
+		<tr><td id="hour">12</td><td>:</td><td id="min">34</td><td>:</td><td id="sec">56</td></tr>
+	</table>
+</body>
+
+</html>

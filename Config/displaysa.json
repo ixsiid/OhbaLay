@@ -1,0 +1,53 @@
+{
+    "MirrorY": true,
+    "MirrorX": false,
+    "Overlays": [{
+        "comment1": "コメントはJSONのフォーマットを守れるように適当に項目ふやして書き込めます",
+        "comment2": "comment1, comment2みたいな想定外のキー値は無視されるからです",
+        "name": "friends.cafe update",
+        "url": ".\\Config\\friends.html",
+        "resolution": {
+            "x": 1200,
+            "y": 1000
+        },
+        "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0.5
+        },
+        "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "device": "HMD"
+    }, {
+        "comment1": "deviceを指定しないことでルーム座標系で設置することができます",
+        "comment2": "positionはオーバーレイの中心座標で単位は[meter], rotationの単位はオイラー角で[degrees]です",
+        "comment3": "widthを[meter]で指定することでサイズを、heightはresolutionのアスペクト比から計算されます",
+        "name": "Google",
+        "url": ".\\Config\\text.html",
+        "resolution": { "x": 640, "y": 240 },
+        "position": { "x": 0, "y": 1, "z": -2 },
+        "rotation": { "x": 0, "y": 180, "z": 0 },
+        "width": 3
+    }, {
+        "comment1": "deviceを'Left' or 'Right'と設定することでコントローラーに追従できます",
+        "comment3": "全てのパラメータは省略することでデフォルト値が適用されます",
+        "name": "tracking to left",
+        "device": "Left",
+        "url": ".\\Config\\watch.html",
+        "resolution": { "x": 240, "y": 240 },
+        "position": { "x": 0, "y": 0.05, "z": -0.2 },
+        "rotation": { "x": -90, "y": 20, "z": 90 },
+        "width": 0.05
+    }, {
+        "comment": "urlは、ネットワーク上のサイトも可能です",
+        "name": "Twitter#大場レイ",
+        "url": "https://twitter.com/search?q=%23%E5%A4%A7%E5%A0%B4%E3%83%AC%E3%82%A4&src=typed_query",
+        "resolution": { "x": 800, "y": 1200 },
+        "position": { "x": 1.5, "y": 1.5, "z": 1.2 },
+        "rotation": { "x": 10, "y": 315, "z": 0 },
+        "width": 1.5
+    }]
+}

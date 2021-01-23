@@ -58,3 +58,17 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# 3rd-person library
+Assets/SteamVR
+Assets/SteamVR_Resources
+Assets/Vuplex
+Assets/Plugins/UniRx
+Assets/EasyOpenVROverlayForUnity
+
+# memo
+Memo.txt
+
+*.meta
+.vscode
+
+ProjectSettings

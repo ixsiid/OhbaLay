@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <title>大場レイ :: 使い方</title>
+
+    <!-- placeholders for the theme switcher -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" id="theme_stylesheet" href="./aaajsoneditor_files/bootstrap-combined.min.css"> -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <!-- <style>[class*="foundicon-"] {font-family: GeneralFoundicons;font-style: normal;}</style> -->
+    <!-- <script src="./aaajsoneditor_files/jsoneditor.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/json-editor/0.7.28/jsoneditor.min.js"
+        integrity="sha256-51+oMmpgSgS4jV5/DcGKnDHIOL6Jeie2i7ka6sPQVro=" crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+        }
+
+        nav>div {
+            width: 12em;
+            border-radius: 1.5em;
+            padding: 1em;
+            margin: 1.5em;
+            background-color: #eff;
+        }
+
+        nav h1 {
+            font-size: 130%;
+            padding: 0.2em;
+            margin: 0;
+        }
+
+        nav li {
+            color: darkgray;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        nav li:hover {
+            color: black;
+        }
+
+        article {
+            display: none;
+            padding: 2em;
+            min-width: 0;
+        }
+
+        article#abstract_content {
+            display: block;
+        }
+
+        article pre {
+            tab-size: 5;
+            overflow: scroll;
+            padding: 1em;
+            background-color: rgb(9, 31, 53);
+            color: white;
+        }
+
+        input[name$="[x]"],
+        input[name$="[y]"],
+        input[name$="[z]"] {
+            width: 4em !important;
+        }
+
+        .controls {
+            display: inline;
+            margin-left: 1em;
+        }
+
+        button {
+            background-color: #eea !important;
+            border-radius: 2em !important;
+            margin-right: 1em;
+            margin-left: 1em;
+        }
+
+        .property-selector h3 {
+            font-size: inherit;
+        }
+
+        div[data-schemaid="root"] {
+            margin-top: 4em;
+        }
+
+        .json_buttons {
+            margin: 1em;
+        }
+
+        .json_buttons > * {
+            margin: 1em;
+        }
+
+        dl {
+            padding: 0.8em;
+            background-color: khaki;
+            width: fit-content;
+        }
+
+        dd {
+            margin-left: 3em;
+        }
+    </style>
+    <script>
+        const schema = {
+            title: "Overlay displays",
+            type: "object",
+            properties: {
+                MirrorX: {
+                    type: "boolean",
+                    description: "オーバーレイをX方向でミラー表示にするか否か",
+                    default: false
+                },
+                MirrorY: {
+                    type: "boolean",
+                    description: "オーバーレイをY方向でミラー表示にするか否か",
+                    default: false
+                },
+                Overlays: {
+                    type: "array",
+                    items: {
+                        type: "object",
+                        title: "オーバーレイ表示",
+                        properties: {
+                            name: {
+                                type: "string",
+                                description: "表示を識別する名前。現在非利用",
+                                uniqueItems: true,
+                                default: null
+                            },
+                            url: {
+                                type: "string",
+                                description: "表示するURL、ローカルファイルも可",
+                                default: "",
+                            },
+                            resolution: {
+                                type: "object",
+                                description: "ブラウザの解像度。必要以上に大きな数字にすると処理が重くなる、または起動しないことがあります。",
+                                properties: {
+                                    x: {
+                                        type: "integer",
+                                        default: 1200
+                                    },
+                                    y: {
+                                        type: "integer",
+                                        default: 1000
+                                    }
+                                },
+                                required: ["x", "y"]
+                            },
+                            width: {
+                                type: "number",
+                                description: "VR空間上に表示する大きさ（幅）。高さは解像度のアスペクト比から計算されます。",
+                                default: 1.0
+                            },
+                            position: {
+                                type: "object",
+                                description: "オーバーレイを表示する中心座標（Unity座標系）",
+                                properties: {
+                                    x: { type: "number", default: 0 },
+                                    y: { type: "number", default: 0 },
+                                    z: { type: "number", default: 0 }
+                                },
+                                required: ["x", "y", "z"]
+                            },
+                            rotation: {
+                                type: "object",
+                                description: "オーバーレイの回転（Unity座標系でオイラー角）",
+                                properties: {
+                                    x: { type: "number", default: 0 },
+                                    y: { type: "number", default: 0 },
+                                    z: { type: "number", default: 0 }
+                                },
+                                required: ["x", "y", "z"]
+                            },
+                            device: {
+                                type: "string",
+                                description: "オーバーレイを追従させるデバイス (HMD|Left|Right|シリアルナンバー）",
+                                enum: ["HMD", "Left", "Right", "other"]
+                            }
+                        },
+                        required: ["url"]
+                    }
+                }
+            },
+            required: ["MirrorX", "MirrorY", "Overlays"]
+        };
+
+        window.addEventListener('load', () => {
+            const articles = document.querySelectorAll('article');
+            document.querySelectorAll('nav li').forEach((element) => {
+                element.addEventListener('click', () => {
+                    articles.forEach(element => element.style.display = 'none');
+                    document.querySelector(`article#${element.id}_content`).style.display = 'block';
+                });
+            });
+
+            document.querySelector('#schema').textContent = JSON.stringify(schema, null, '\t');
+
+            const editor = new JSONEditor(document.querySelector('#json_form'), {
+                schema,
+                startval: { MirrorX: false, MirrorY: false, Overlays: [] },
+                disable_collapse: true,
+                theme: 'bootstrap2',
+                display_required_only: true,
+                disable_edit_json: true,
+                disable_array_reorder: true,
+                no_additional_properties: true,
+            });
+
+            document.querySelectorAll('.json_buttons .save').forEach(button => {
+                button.addEventListener('click', () => {
+                    const blob = new Blob([JSON.stringify(editor.getValue())], { type: "application/json" });
+                    const a = document.createElement('a');
+                    a.setAttribute('href', window.URL.createObjectURL(blob));
+                    a.setAttribute('download', 'displays.json');
+                    a.click();
+                });
+            });
+
+            document.querySelectorAll('.json_buttons .load').forEach(button => {
+                button.addEventListener('change', event => {
+                    const reader = new FileReader();
+                    reader.addEventListener('load', () => {
+                        editor.setValue(JSON.parse(reader.result));
+                    });
+                    reader.readAsText(event.target.files[0]);
+                });
+            });
+        }, { once: true });
+    </script>
+</head>
+
+<body>
+    <nav>
+        <div>
+            <h1>目次</h1>
+            <ul>
+                <li id="abstract">概要</li>
+                <li id="json">設定方法</li>
+                <li id="html">オーバーレイ作成のTips</li>
+                <li id="json_generate">設定ファイルジェネレータ</li>
+                <li id="download">ダウンロード</li>
+            </ul>
+        </div>
+    </nav>
+
+    <article id="abstract_content">
+        <h1>これは何？</h1>
+        <p>内部的にChromium v81ブラウザを実行し、そのレンダリング結果をVR空間上に投影します。</p>
+        <p><img src="./images/screenshot1.png" style="width: 40em;" alt="スクリーンショット"></p>
+        <p>VRオーバーレイという機能を用いるため、現在起動しているVRアプリケーションに関わらず、表示できます。
+            デモとして次の2つがデフォルトで表示する設定になっています。</p>
+        <ul>
+            <li>ゲーミング大場レイ文字</li>
+            <li>左手にデジタル時計</li>
+        </ul>
+        <p>内部動作はブラウザなので、ローカルのHTMLファイル、Web上のサイトの他、画像や動画を表示することも可能です。
+            また、javascriptによるインタラクティブコンテンツの作成のほか、WebSocketを使った通信の待ち受け、CSSアニメーションなども動作します。</p>
+
+        <p>VR上のデバイス（トラッカー）に追従させることも可能なため、デモのような腕時計のようなものの他、HUD (Head Up Display)のような表示のほか、
+            別途トラッカーを用意し、自由に動かせるモニターのように利用することもできます。</p>
+
+        <p>時計などの情報表示のほか、LINEやTwitterなどの通知の表示、
+            VR配信時のコメントビューアー、ゆかりねっとの認識結果を確認するなどの使い方が考えられます。</p>
+
+        <h1>注意事項</h1>
+        <p>現在オーバーレイ表示したブラウザの操作、フォームの入力やクリック、画面のスクロールなどには対応していません。
+            VRアプリケーションの操作と競合しない入力方法が確立できていないためです。</p>
+
+        <p>まだ開発版ですので、床に小さく "大場レイ#開発版" と表示されます。ご了承ください。</p>
+    </article>
+
+    <article id="json_content">
+        <h1>設定方法</h1>
+        <p>デフォルトで起動時に 'Config/displays.json' ファイルを読みにいきます。</p>
+        <p>全ての設定はこの 'displays.json' ファイルに記載し、VR空間上での位置・角度の他、表示するURL、解像度などを記載します。</p>
+        <p>解像度の単位は pixel、長さの単位は meter、角度の単位は degreeです。</p>
+
+        <p>ファイルフォーマットは下記の通りですが、左記のリンクからジェネレータを使うと便利です。</p>
+        <h1>ファイルフォーマット</h1>
+        <pre id="schema"></pre>
+    </article>
+
+    <article id="json_generate_content">
+        <div id="json_form">
+            <h1>設定ファイルジェネレータ</h1>
+        </div>
+        <div class="json_buttons">
+            <input type="button" value="保存" class="save">
+            <label>読み込み<input type="file" class="load"></label>
+        </div>
+    </article>
+
+    <article id="download_content">
+        <h1>ダウンロード</h1>
+        <p><a href="https://github.com/ixsiid/OhbaLay">Github</a>より入手してください。</p>
+    </article>
+    
+    <article id="html_content">
+        <h1>Tips</h1>
+
+        <h2>背景を透過させる</h2>
+        <p>対象のHTML内に次のMETAタグを追加します</p>
+        <pre>&lt;meta name="transparent" content="true"&gt;</pre>
+
+        <h2>HUDみたいな表示にする</h2>
+        <p>HMD追従させて、サイズをうまく調整すればできます。初代Viveの場合、次の設定でいい感じになります</p>
+        <dl>
+            <dt>position</dt>
+            <dd>{ x: 0, y: 0, z: 0.5 }</dd>
+            <dt>resolution</dt>
+            <dd>{ x: 1200, y: 1000 }</dd>
+            <dt>device</dt>
+            <dd>HMD</dd>
+        </dl>
+
+        <p>あまりHMDからの距離を近づけすぎる（position.zを小さくする）と左右の視差が吸収できなくなって疲れます。</p>
+
+        <h2>解像度がぼやける</h2>
+        <p>resolutionを上げればいいですが、HTML内のスタイルでサイズと合わせておくとデスクトップのブラウザの表示と合わせやすいです。</p>
+        <p>例えば、640x480pxで表示する場合は下記の通りです。</p>
+        <pre>
+&lt;style&gt;
+    html {
+        width: 640px;
+        height: 480px;
+        overflow: hidden;
+    }
+&lt;/style&gt;
+        </pre>
+        <dl>
+            <dt>resolution</dt>
+            <dd>{ x: 640, y: 480 }</dd>
+        </dl>
+
+        <h2>文字化けする</h2>
+        <p>METAタグで言語情報を設定しましょう</p>
+        <pre>&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"&gt;</pre>
+    </article>
+
+</body>
+
+</html>
