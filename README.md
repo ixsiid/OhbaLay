@@ -1,7 +1,7 @@
 # 大場レイ
 VR空間上にブラウザを埋め込み、オーバーレイで表示するツールです。
 
-![スクリーンショット](./HowToUse/images/screenshot1.png)
+![スクリーンショット](./docs/images/screenshot1.png)
 
 # 使い方
 releaseよりダウンロードしてください
