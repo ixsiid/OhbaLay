@@ -31,6 +31,14 @@ JSONのフォーマットなどは[ドキュメント](https://ixsiid.github.io/
 
 まだ開発版ですので、床に小さく "大場レイ#開発版" と表示されます。ご了承ください。
 
+# 開発者向け
+
+オーバーレイ表示には、gpsnmeajpさんの[EasyOpenVROverlayForUnity](https://sabowl.sakura.ne.jp/gpsnmeajp/unity/EasyOpenVROverlayForUnity/)を利用しています。
+
+ブラウザはUnity Asset Storeの[3D WebView for Windows and macOS (Web Browser) / Vuplex](https://assetstore.unity.com/packages/tools/gui/3d-webview-for-windows-and-macos-web-browser-154144)
+
+その他のAssetとして、SteamVR PluginとUniRxを利用しています。
+
 # 連絡先
 Twitter: ixsiid
 
